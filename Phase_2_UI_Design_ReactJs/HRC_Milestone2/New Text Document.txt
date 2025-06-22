@@ -1,0 +1,132 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+
+const StyledTableCell = withStyles((theme) => ({
+    head:
+    {
+        backgroundColor: '#356680'
+    },
+    body:
+    {
+        fontSize: 15 
+    },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+    root:
+    {
+        '&:nth-of-type(odd)':
+        {
+            backgroundColor: '#58687E'
+        },
+        '&:nth-of-type(even)':
+        {
+            backgroundColor: "#2079A2"
+        },
+    },
+}))(TableRow);
+
+const useStyles = makeStyles({
+    table:
+    {
+        minWidth: 10,
+    },
+    container:
+    {
+        maxWidth: "10%",
+        maxHeight: 10
+    }
+});
+
+const App = () => 
+{
+    const classes = useStyles();
+    const [product, setProduct] = useState([])
+    const [search, setsearch] = useState("")
+  
+    const getProductData = async () => {
+        try 
+        {
+            let data = await axios.get("http://localhost:8080/Summer_Internship_Backend/user/*");
+            console.log(data.data)
+            setProduct(data.data)
+        }
+        catch(e) 
+        {
+            console.log(e)
+        }
+    }
+   
+
+    useEffect(() => 
+    {
+        getProductData()
+    },[])
+    return (
+        <div>
+            <TableContainer  component={Paper}>
+                <Table  className={classes.table} aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell>Customer Name</StyledTableCell>
+                            <StyledTableCell>Customer #</StyledTableCell>
+                            <StyledTableCell>invoice #</StyledTableCell>
+                            <StyledTableCell>Invoice Amount</StyledTableCell>
+                            <StyledTableCell>Due Date</StyledTableCell>
+                            <StyledTableCell>Predicted Payment Date</StyledTableCell>
+                            <StyledTableCell>Predicted Aging Bucket</StyledTableCell>
+                            <StyledTableCell>Notes</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+
+                    <TableBody style ={{ height: 40, width: '10%' }}>
+                        {product.filter(item =>
+                        {
+                            if(search === "")
+                            {
+                                return item
+                            }
+                            else if (item.name_customer.toLowerCase().includes(search.toLowerCase())) {
+                                return item
+                            }
+                        })
+                            .map((item) => {
+                                return (
+                                    <StyledTableRow>
+                                    <TableCell>{item.name_customer}</TableCell>
+                                    <TableCell>{item.cust_number}</TableCell>
+                                    <TableCell>{item.invoice_id}</TableCell>
+                                    <TableCell>{item.total_open_amount}</TableCell>
+                                    <TableCell>{item.due_in_date}</TableCell>
+                                    <TableCell>-</TableCell>
+                                    <TableCell>-</TableCell>
+                                    <TableCell>-</TableCell>
+                                    <TableCell>{item.notes}</TableCell>
+                                </StyledTableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
+    );
+}
+
+export default App;
+
+
+
+
+
+
+
+
+

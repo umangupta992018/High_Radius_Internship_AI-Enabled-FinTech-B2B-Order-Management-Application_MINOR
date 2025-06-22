@@ -1,0 +1,8 @@
+.body {
+    background-color: #212428;
+    height: 90vh;
+    display: grid;
+    align-content: center;
+    margin: 2rem 4rem 2px 4rem;
+    border: solid 3px #FFE01C;
+};
